@@ -6,17 +6,19 @@ function App() {
   const [tasks, setTasks] = useState([])
   const [error, setError] = useState('')
 
-  // Fetch tasks on component mount
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axiosClient.get('/tasks')
-        setTasks(response.data)
-      } catch (err) {
-        console.error(err)
-        setError('Failed to fetch tasks')
-      }
+  // Fetch tasks function that can be reused
+  const fetchTasks = async () => {
+    try {
+      const response = await axiosClient.get('/tasks')
+      setTasks(response.data)
+    } catch (err) {
+      console.error(err)
+      setError('Failed to fetch tasks')
     }
+  }
+
+  // Initial fetch
+  useEffect(() => {
     fetchTasks()
   }, [])
 
@@ -24,10 +26,10 @@ function App() {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Task Manager</h1>
       
-      {/* Task Form */}
+      {/* Task Form - Pass fetchTasks as onSuccess prop */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Create New Task</h2>
-        <TaskForm onSuccess={() => window.location.reload()} />
+        <TaskForm onSuccess={fetchTasks} />
       </div>
 
       {/* Task List */}

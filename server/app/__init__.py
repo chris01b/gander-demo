@@ -19,7 +19,7 @@ def create_app():
     CORS(app)
 
     # Import models and routes AFTER db initialization
-    from . import models  # Add this line
+    # from . import models  # Add this line
     from .routes import tasks  # Add this line
 
     # Register blueprints
