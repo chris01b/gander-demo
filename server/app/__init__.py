@@ -9,6 +9,7 @@ ma = Marshmallow()
 
 def create_app():
     app = Flask(__name__)
+    app.url_map.strict_slashes = False
     app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///gander_demo"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
