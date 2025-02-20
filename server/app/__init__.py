@@ -16,10 +16,10 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     ma.init_app(app)
-    CORS(app)
+    CORS(app, origins=["http://localhost:5173", "http://localhost:5174"])
 
     # Import models and routes AFTER db initialization
-    # from . import models  # Add this line
+    from . import models  # Add this line
     from .routes import tasks  # Add this line
 
     # Register blueprints
