@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { clientApi } from '../../api/clientApi'
+import { useNavigate } from 'react-router-dom'
 
 export default function RequestForm() {
   const [formData, setFormData] = useState({
@@ -10,11 +11,13 @@ export default function RequestForm() {
     urgency: 'routine'
   })
 
+  const navigate = useNavigate()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       await clientApi.post('/requests', formData)
-      // Add success feedback
+      navigate('/requests')  // Redirect to request list after submission
     } catch (error) {
       console.error('Submission failed:', error)
     }
