@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import { clientApi } from '../../api/clientApi'
 
 export default function RequestForm() {
   const [formData, setFormData] = useState({
@@ -13,7 +13,7 @@ export default function RequestForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.post('/api/client/requests', formData)
+      await clientApi.post('/requests', formData)
       // Add success feedback
     } catch (error) {
       console.error('Submission failed:', error)
