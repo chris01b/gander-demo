@@ -20,11 +20,11 @@ def create_app():
 
     # Import models and routes AFTER db initialization
     from . import models
-    from .routes import client_bp, warehouse_bp
+    from .routes import client_api, warehouse_api
 
     # Register blueprints
-    app.register_blueprint(client_bp.client_bp)
-    app.register_blueprint(warehouse_bp.warehouse_bp)
+    app.register_blueprint(client_api.client_bp)
+    app.register_blueprint(warehouse_api.warehouse_bp)
 
     # Create tables
     with app.app_context():
