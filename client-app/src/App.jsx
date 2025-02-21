@@ -1,55 +1,22 @@
-import { useState, useEffect } from 'react'
-import axiosClient from './lib/axiosClient'
-import TaskForm from './features/tasks/TaskForm'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import RequestForm from './features/requests/RequestForm'
+import RequestList from './features/requests/RequestList'
 
-function App() {
-  const [tasks, setTasks] = useState([])
-  const [error, setError] = useState('')
-
-  // Fetch tasks function that can be reused
-  const fetchTasks = async () => {
-    try {
-      const response = await axiosClient.get('/tasks')
-      setTasks(response.data)
-    } catch (err) {
-      console.error(err)
-      setError('Failed to fetch tasks')
-    }
-  }
-
-  // Initial fetch
-  useEffect(() => {
-    fetchTasks()
-  }, [])
-
+export default function App() {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Task Manager</h1>
-      
-      {/* Task Form - Pass fetchTasks as onSuccess prop */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Create New Task</h2>
-        <TaskForm onSuccess={fetchTasks} />
-      </div>
-
-      {/* Task List */}
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Tasks</h2>
-        {error && <p className="text-red-500">{error}</p>}
+    <BrowserRouter>
+      <div className="min-h-screen bg-gray-50">
+        <nav className="bg-white shadow-sm p-4">
+          <h1 className="text-xl font-bold text-blue-600">Aviation Parts Client</h1>
+        </nav>
         
-        <ul className="space-y-2">
-          {tasks.map(task => (
-            <li 
-              key={task.id}
-              className="p-2 border rounded hover:bg-gray-50"
-            >
-              {task.title}
-            </li>
-          ))}
-        </ul>
+        <main className="p-4 max-w-7xl mx-auto">
+          <Routes>
+            <Route path="/" element={<RequestForm />} />
+            <Route path="/requests" element={<RequestList />} />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </BrowserRouter>
   )
 }
-
-export default App
