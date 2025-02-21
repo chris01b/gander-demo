@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import db
-from app.models import PartRequest, part_request_schema
+from app.models import PartRequest, part_request_schema, part_requests_schema
 
 client_bp = Blueprint('client', __name__, url_prefix='/api/client')
 
