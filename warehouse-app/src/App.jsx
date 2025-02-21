@@ -1,55 +1,37 @@
-import { useState, useEffect } from 'react'
-import axiosClient from './lib/axiosClient'
-import TaskForm from './features/tasks/TaskForm'
+import { useEffect, useState } from 'react'
+import RequestQueue from './features/fulfillment/RequestQueue'
+import { warehouseApi } from './api/warehouseApi'
 
-function App() {
-  const [tasks, setTasks] = useState([])
-  const [error, setError] = useState('')
-
-  // Fetch tasks function that can be reused
-  const fetchTasks = async () => {
+export default function App() {
+  const [requests, setRequests] = useState([])
+  
+  const refreshRequests = async () => {
     try {
-      const response = await axiosClient.get('/tasks')
-      setTasks(response.data)
-    } catch (err) {
-      console.error(err)
-      setError('Failed to fetch tasks')
+      const response = await warehouseApi.get('/requests')
+      setRequests(response.data)
+    } catch (error) {
+      console.error('Error fetching requests:', error)
     }
   }
 
-  // Initial fetch
   useEffect(() => {
-    fetchTasks()
+    refreshRequests()
+    const interval = setInterval(refreshRequests, 10000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Task Manager</h1>
+    <div className="min-h-screen bg-gray-50">
+      <nav className="bg-white shadow-sm p-4">
+        <h1 className="text-xl font-bold text-orange-600">Warehouse Fulfillment</h1>
+      </nav>
       
-      {/* Task Form - Pass fetchTasks as onSuccess prop */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Create New Task</h2>
-        <TaskForm onSuccess={fetchTasks} />
-      </div>
-
-      {/* Task List */}
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Tasks</h2>
-        {error && <p className="text-red-500">{error}</p>}
-        
-        <ul className="space-y-2">
-          {tasks.map(task => (
-            <li 
-              key={task.id}
-              className="p-2 border rounded hover:bg-gray-50"
-            >
-              {task.title}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <main className="p-4 max-w-7xl mx-auto">
+        <RequestQueue 
+          requests={requests} 
+          onStatusChange={refreshRequests}
+        />
+      </main>
     </div>
   )
 }
-
-export default App
