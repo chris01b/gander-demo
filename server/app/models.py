@@ -1,5 +1,8 @@
 from app import db
 from datetime import datetime
+from flask_marshmallow import Marshmallow
+
+ma = Marshmallow()
 
 
 class PartRequest(db.Model):
@@ -15,3 +18,15 @@ class PartRequest(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     closed_at = db.Column(db.DateTime)
     notes = db.Column(db.Text)
+
+
+class PartRequestSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = PartRequest
+        include_fk = True
+        load_instance = True
+
+
+# Initialize schemas
+part_request_schema = PartRequestSchema()
+part_requests_schema = PartRequestSchema(many=True)
