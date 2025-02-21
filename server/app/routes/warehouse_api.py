@@ -17,12 +17,17 @@ def get_open_requests():
 
 @warehouse_bp.route('/requests/<int:id>/status', methods=['PATCH'])
 def update_status(id):
-    request = PartRequest.query.get_or_404(id)
-    new_status = request.json.get('status')
+    part_request = PartRequest.query.get_or_404(id)
+    new_status = request.json.get('status')  # Use Flask's request object
+
+    if new_status not in ['open', 'in-progress', 'closed']:
+        return jsonify({'error': 'Invalid status'}), 400
 
     if new_status == 'closed':
-        request.closed_at = datetime.utcnow()
+        part_request.closed_at = datetime.utcnow()
+    else:
+        part_request.closed_at = None  # Reset if status is not 'closed'
 
-    request.status = new_status
+    part_request.status = new_status
     db.session.commit()
-    return part_request_schema.jsonify(request)
+    return part_request_schema.jsonify(part_request)
