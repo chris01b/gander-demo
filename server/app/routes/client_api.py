@@ -49,3 +49,15 @@ def update_client_request_status(id):
     part_request.closed_at = datetime.utcnow()
     db.session.commit()
     return part_request_schema.jsonify(part_request)
+
+
+@client_bp.route('/requests', methods=['DELETE'])
+def delete_all_requests():
+    try:
+        # Delete all requests
+        num_deleted = db.session.query(PartRequest).delete()
+        db.session.commit()
+        return jsonify({'message': f'Deleted {num_deleted} requests'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500

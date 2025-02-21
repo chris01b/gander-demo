@@ -85,6 +85,27 @@ export default function RequestList() {
           </div>
         </div>
       ))}
+
+      {(requests.length > 0 || closedRequests.length > 0) && (
+        <div className="mt-8 pt-4 border-t border-gray-200">
+          <button
+            onClick={async () => {
+              if (window.confirm('Are you sure you want to delete ALL requests? This cannot be undone.')) {
+                try {
+                  await clientApi.delete('/requests');
+                  setRequests([]);
+                  setClosedRequests([]);
+                } catch (error) {
+                  console.error('Failed to clear requests:', error);
+                }
+              }
+            }}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm"
+          >
+            Clear All Requests
+          </button>
+        </div>
+      )}
     </div>
   )
 }
