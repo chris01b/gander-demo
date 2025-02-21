@@ -9,10 +9,8 @@ warehouse_bp = Blueprint('warehouse', __name__, url_prefix='/api/warehouse')
 
 @warehouse_bp.route('/requests', methods=['GET'])
 def get_open_requests():
-    requests = PartRequest.query.filter(
-        PartRequest.status.in_(['open', 'in-progress'])
-    ).all()
-    return jsonify(part_requests_schema.dump(requests))  # Correct schema usage
+    requests = PartRequest.query.all()
+    return jsonify(part_requests_schema.dump(requests))
 
 
 @warehouse_bp.route('/requests/<int:id>/status', methods=['PATCH'])

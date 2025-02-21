@@ -3,12 +3,19 @@ import { clientApi } from '../../api/clientApi'
 
 export default function RequestList() {
   const [requests, setRequests] = useState([])
+  const [closedRequests, setClosedRequests] = useState([])
 
   useEffect(() => {
     const loadRequests = async () => {
       try {
         const response = await clientApi.get('/requests')
-        setRequests(response.data)
+        const allRequests = response.data
+        const openOrInProgress = allRequests.filter((r) => 
+          r.status === 'open' || r.status === 'in-progress'
+        )
+        const closed = allRequests.filter((r) => r.status === 'closed')
+        setRequests(openOrInProgress)
+        setClosedRequests(closed)
       } catch (error) {
         console.error('Failed to load requests:', error)
       }
@@ -19,8 +26,27 @@ export default function RequestList() {
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold mb-4">Your Requests</h2>
-      {requests.map(request => (
-        <div key={request.id} className="bg-white p-4 rounded shadow">
+
+      {/* Open / In-Progress */}
+      <h3 className="font-medium text-gray-700 mb-2">Open / In Progress</h3>
+      {requests.map((request) => (
+        <div key={request.id} className="bg-white p-4 rounded shadow mb-2">
+          <div className="flex justify-between">
+            <div>
+              <h3 className="font-medium">{request.part_number}</h3>
+              <p className="text-sm text-gray-600">{request.aircraft_type}</p>
+            </div>
+            <span className={`badge ${STATUS_COLORS[request.status]}`}>
+              {request.status}
+            </span>
+          </div>
+        </div>
+      ))}
+
+      {/* Closed */}
+      <h3 className="font-medium text-gray-700 mt-6 mb-2">Closed Requests</h3>
+      {closedRequests.map((request) => (
+        <div key={request.id} className="bg-white p-4 rounded shadow mb-2">
           <div className="flex justify-between">
             <div>
               <h3 className="font-medium">{request.part_number}</h3>
