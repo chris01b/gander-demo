@@ -19,11 +19,12 @@ def create_app():
     CORS(app, origins=["http://localhost:5173", "http://localhost:5174"])
 
     # Import models and routes AFTER db initialization
-    from . import models  # Add this line
-    from .routes import tasks  # Add this line
+    from . import models
+    from .routes import client_bp, warehouse_bp
 
     # Register blueprints
-    app.register_blueprint(tasks.task_bp)
+    app.register_blueprint(client_bp.client_bp)
+    app.register_blueprint(warehouse_bp.warehouse_bp)
 
     # Create tables
     with app.app_context():
